@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import hardware.*;
 // import math.*;
 
 /**
@@ -19,9 +21,9 @@ public class Robot extends TimedRobot {
   // The robot's subsystems and commands are defined here...
   // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  Swerve swerve;
   XboxController driver;
   XboxController operator;
+  CANSparkMax _motor;
 
   // Arm arm;
   /**
@@ -32,10 +34,11 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our Robot. This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    swerve = new Swerve();
 
     driver = new XboxController(0);
     operator = new XboxController(1);
+
+    _motor = new CANSparkMax(5, MotorType.kBrushless);
   
     // arm = new Arm();
    
@@ -75,11 +78,16 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() 
   {
     // Update the odometry for the swerve drive
-    swerve.periodic();
+    // swerve.periodic();
+    if (driver.getAButton()) {
+      _motor.set(-0.75);
+    } else if (driver.getBButton()) {
+      _motor.set(0);
+    }
 
     // Drive the robot
     //               SpeedX             SpeedY            Rotation         Field Relative
-    swerve.drive(driver.getLeftX(), driver.getLeftY(), driver.getRightX(), isAutonomous());
+    // swerve.drive(driver.getLeftX(), driver.getLeftY(), driver.getRightX(), isAutonomous());
     
     // arm.drive(operator.getRightX(), operator.getRightY());
 
